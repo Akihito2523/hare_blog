@@ -1,26 +1,9 @@
 <x-app-layout>
     <div class="container lg:w-3/4 md:w-4/5 w-11/12 mx-auto my-8 px-8 py-4 bg-white shadow-md">
 
-        {{-- エラーメッセージ --}}
-        @if (session('notice'))
-            <div class="bg-blue-100 border-blue-500 text-blue-700 border-l-4 p-4 my-2">
-                {{ session('notice') }}
-            </div>
-        @endif
 
-        {{-- 自分以外の記事を更新しようとした場合に、照会画面にエラーメッセージ --}}
-        @if ($errors->any())
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-2" role="alert">
-                <p>
-                    <b>{{ count($errors) }}件のエラーがあります。</b>
-                </p>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <x-flash-message :message="session('notice')" />
+        <x-validation-errors :errors="$errors" />
 
         <article class="mb-2">
             <h2 class="font-bold font-sans break-normal text-gray-900 pt-6 pb-1 text-3xl md:text-4xl">

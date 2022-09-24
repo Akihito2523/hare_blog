@@ -109,9 +109,10 @@ class PostController extends Controller {
         }
         // 画像がアップロードされているか
         $file = $request->file('image');
+
         if ($file) {
             // 削除する画像
-            $delete_file_path = 'images/posts/' . $post->image;
+            $delete_file_path = $post->image_path;
             $post->image = self::createFileName($file);
         }
         $post->fill($request->all());
@@ -132,7 +133,7 @@ class PostController extends Controller {
                 // 画像削除
                 if (!Storage::delete($delete_file_path)) {
                     //アップロードした画像を削除する
-                    Storage::delete('images/posts/' . $post->image);
+                    Storage::delete($post->image_path);
                     //例外を投げてロールバックさせる
                     throw new \Exception('画像ファイルの削除に失敗しました。');
                 }
@@ -159,7 +160,29 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        //
+        $post = Post::find($id);
+
+        // トランザクション開始
+        DB::beginTransaction();
+        try {
+            $post->delete();
+
+            // 画像削除
+            if (!Storage::delete($post->image_path)) {
+                // 例外を投げてロールバックさせる
+                throw new \Exception('画像ファイルの削除に失敗しました。');
+            }
+
+            // トランザクション終了(成功)
+            DB::commit();
+        } catch (\Exception $e) {
+            // トランザクション終了(失敗)
+            DB::rollback();
+            return back()->withInput()->withErrors($e->getMessage());
+        }
+
+        return redirect()->route('posts.index')
+            ->with('notice', '記事を削除しました');
     }
 
     // (getClientOriginalName)ファイル名を取得
