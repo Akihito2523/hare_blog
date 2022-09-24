@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,12 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// アクセスしたページ
+Route::get('/', [PostController::class, 'index'])
+    ->name('root');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+// 認証していなければアクセスできないように制御
+Route::resource('posts', PostController::class)
+    ->only(['create', 'store', 'edit', 'update', 'destroy'])
+    ->middleware('auth');
+
+//認証していなくてもアクセスできる
+Route::resource('posts', PostController::class)
+    ->only(['show', 'index']);
+
+require __DIR__ . '/auth.php';
