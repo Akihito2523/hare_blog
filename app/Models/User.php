@@ -52,4 +52,8 @@ class User extends Authenticatable {
         // (hasMany)1人のユーザーは複数の記事に紐付いている
         return $this->hasMany(Post::class);
     }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
 }
