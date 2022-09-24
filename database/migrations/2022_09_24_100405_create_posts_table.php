@@ -20,6 +20,7 @@ class CreatePostsTable extends Migration {
                 ->constrained()//foreignIdとセット
                 ->cascadeOnUpdate()//cascadeでユーザが更新されたら更新する
                 ->cascadeOnDelete();
+                $table->timestamps();
         });
     }
 
