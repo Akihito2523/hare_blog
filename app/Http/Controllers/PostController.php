@@ -14,7 +14,12 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return view('posts.index');
+        // Post::latest()メソッドでcreated_atの降順
+        // ページネーション
+        // withメソッドを使用することで、関連するテーブルの情報を取得することが可能
+        $posts = Post::with('user')->latest()->paginate(4);
+        // dd($posts);
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -135,9 +140,11 @@ class PostController extends Controller {
 
             // トランザクション終了(成功)
             DB::commit();
+            // throwの内容をcatchに入る
         } catch (\Exception $e) {
             // トランザクション終了(失敗)
             DB::rollback();
+            // withInput、テキストボックスの中身
             return back()->withInput()->withErrors($e->getMessage());
         }
 
