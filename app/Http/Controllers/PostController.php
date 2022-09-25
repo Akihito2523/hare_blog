@@ -39,9 +39,11 @@ class PostController extends Controller {
      */
     public function store(PostRequest $request) {
         $post = new Post($request->all());
+        // ログインユーザーのIDを取得
         $post->user_id = $request->user()->id;
-
+        // アップロードする画像の情報を受け取る
         $file = $request->file('image');
+        // privateなクラスメソッドを呼び出す場合はself::メソッド名
         $post->image = self::createFileName($file);
         // dd($post);
 
@@ -51,7 +53,8 @@ class PostController extends Controller {
             // 登録
             $post->save();
 
-            // 画像アップロード
+            // 画像アップロード(Storage::putFileAs)
+            // (保存先のパス, アップロードするファイル, アップロード後のファイル名)
             if (!Storage::putFileAs('images/posts', $file, $post->image)) {
                 // 例外を投げてロールバックさせる
                 throw new \Exception('画像ファイルの保存に失敗しました。');
@@ -62,10 +65,14 @@ class PostController extends Controller {
         } catch (\Exception $e) {
             // トランザクション終了(失敗)
             DB::rollback();
+            // backで直前のページ(create.blade.php)にリダイレクトする
+            // withInputで入力した値を渡す
+            // withErrorsでエラーオブジェクトにエラーメッセージを追加する
             return back()->withInput()->withErrors($e->getMessage());
         }
 
-        return redirect()->route('posts.show', $post)->with('notice', '記事を登録しました');
+        return redirect()
+        ->route('posts.show', $post)->with('notice', '記事を登録しました');
     }
 
     /**
@@ -103,6 +110,7 @@ class PostController extends Controller {
         $post = Post::find($id);
 
         // 更新出来なかったら
+        // 更新権限をcannotで確認
         if ($request->user()->cannot('update', $post)) {
             return redirect()->route('posts.show', $post)
                 ->withErrors('自分の記事以外は更新できません');
@@ -112,6 +120,7 @@ class PostController extends Controller {
 
         if ($file) {
             // 削除する画像
+            // 画像ファイルが指定された時だけ
             $delete_file_path = $post->image_path;
             $post->image = self::createFileName($file);
         }
@@ -185,7 +194,7 @@ class PostController extends Controller {
             ->with('notice', '記事を削除しました');
     }
 
-    // (getClientOriginalName)ファイル名を取得
+    // (getClientOriginalName)画像ファイル名を取得
     private static function createFileName($file) {
         return date('YmdHis') . '_' . $file->getClientOriginalName();
     }

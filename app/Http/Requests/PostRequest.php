@@ -27,13 +27,14 @@ class PostRequest extends FormRequest {
         $rule =  [
             'title' => 'required|string|max:50',
             'body' => 'required|string|max:2000',
-            // ファイルの拡張子がjpgかpngに該当するか確認
         ];
 
+        // 登録時か更新時で且つ画像が指定された時だけ、imageのバリデーションを設定
         if (
             $route === 'posts.store' ||
             ($route === 'posts.update' && $this->file('image'))
         ) {
+            // ファイルの拡張子がjpgかpngに該当するか確認
             $rule['image'] = 'required|file|image|mimes:jpg,png';
         }
         return $rule;

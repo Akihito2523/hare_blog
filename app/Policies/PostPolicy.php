@@ -48,6 +48,9 @@ class PostPolicy {
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Post $post) {
+    // ポリシー修正　
+    // ログインユーザーのidと、記事を投稿したユーザーのIDを比較
+    // 一致していた場合(自分が投稿した記事だった場合)はtrue
         return $user->id === $post->user_id;
     }
 

@@ -2,6 +2,7 @@
     <div class="container lg:w-1/2 md:w-4/5 w-11/12 mx-auto mt-8 px-8 bg-white shadow-md">
         <h2 class="text-center text-lg font-bold pt-6 tracking-widest">ブログ登録</h2>
 
+        {{-- エラーメッセージを取得 --}}
         <x-validation-errors :errors="$errors" />
 
         {{-- enctype="multipart/form-data"ファイルを送信できる --}}

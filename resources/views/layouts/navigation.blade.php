@@ -38,8 +38,9 @@
                     </x-slot>
 
                     <x-slot name="content">
+
                         <!-- Authentication -->
-                        + @auth
+                        @auth
                             <x-dropdown-link :href="route('posts.create')">
                                 {{ __('Create Post') }}
                             </x-dropdown-link>

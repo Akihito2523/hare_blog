@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class Post extends Model {
     use HasFactory;
 
+    // (fillable)代入を許可するカラムを指定する
     protected $fillable = [
         'title',
         'body',
@@ -28,10 +29,11 @@ class Post extends Model {
         return $this->hasMany(Comment::class);
     }
 
+    // 画像のパスは、Postモデルのインスタンス
     public function getImageUrlAttribute() {
         return Storage::url($this->image_path);
     }
-
+// アクセサの追加
     public function getImagePathAttribute() {
         return 'images/posts/' . $this->image;
     }

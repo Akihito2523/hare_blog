@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// アクセスしたページ
+// /にアクセスした場合indexアクションを呼び出す
 Route::get('/', [PostController::class, 'index'])
     ->name('root');
 
@@ -30,5 +31,10 @@ Route::resource('posts', PostController::class)
 //認証していなくてもアクセスできる
 Route::resource('posts', PostController::class)
     ->only(['show', 'index']);
+
+// コメントは記事
+Route::resource('posts.comments', CommentController::class)
+    ->only(['create', 'store', 'edit', 'update', 'destroy', 'destory'])
+    ->middleware('auth');
 
 require __DIR__ . '/auth.php';

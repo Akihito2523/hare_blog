@@ -3,11 +3,13 @@
 
 
         <x-flash-message :message="session('notice')" />
+        {{-- エラーメッセージを取得 --}}
         <x-validation-errors :errors="$errors" />
 
         <article class="mb-2">
             <h2 class="font-bold font-sans break-normal text-gray-900 pt-6 pb-1 text-3xl md:text-4xl">
                 {{ $post->title }}</h2>
+            {{-- Postモデルにpublic function user()を定義しているため --}}
             <h3>{{ $post->user->name }}</h3>
             <p class="text-sm mb-2 md:text-base font-normal text-gray-600">
                 {{-- 三項演算子 --}}
@@ -35,5 +37,15 @@
                 </form>
             @endcan
         </div>
+
+        {{-- ログイン状態の時のみ、照会画面にコメント登録のボタンを表示 --}}
+        @auth
+            <hr class="my-4">
+
+            <div class="flex justify-end">
+                <a href="{{ route('posts.comments.create', $post) }}"
+                    class="bg-indigo-400 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline block">コメント登録</a>
+            </div>
+        @endauth
     </div>
 </x-app-layout>
