@@ -39,7 +39,7 @@ class PostController extends Controller {
      */
     public function store(PostRequest $request) {
         $post = new Post($request->all());
-        // ログインユーザーのIDを取得
+        // ログインユーザーのIDを取得  all以外の
         $post->user_id = $request->user()->id;
         // アップロードする画像の情報を受け取る
         $file = $request->file('image');
@@ -64,6 +64,7 @@ class PostController extends Controller {
             DB::commit();
         } catch (\Exception $e) {
             // トランザクション終了(失敗)
+            // dd($e);
             DB::rollback();
             // backで直前のページ(create.blade.php)にリダイレクトする
             // withInputで入力した値を渡す
@@ -72,7 +73,7 @@ class PostController extends Controller {
         }
 
         return redirect()
-        ->route('posts.show', $post)->with('notice', '記事を登録しました');
+            ->route('posts.show', $post)->with('notice', '記事を登録しました');
     }
 
     /**
@@ -82,9 +83,11 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        $post = Post::find($id);
+        $post = Post::with(['user'])->find($id);
+        // 後からEager loadingを追加する場合はload()で追加
+        $comments = $post->comments()->latest()->get()->load(['user']);
 
-        return view('posts.show', compact('post'));
+        return view('posts.show', compact('post', 'comments'));
     }
 
     /**

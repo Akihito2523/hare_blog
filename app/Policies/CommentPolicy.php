@@ -6,8 +6,7 @@ use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class CommentPolicy
-{
+class CommentPolicy {
     use HandlesAuthorization;
 
     /**
@@ -16,8 +15,7 @@ class CommentPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
-    {
+    public function viewAny(User $user) {
         //
     }
 
@@ -28,8 +26,7 @@ class CommentPolicy
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Comment $comment)
-    {
+    public function view(User $user, Comment $comment) {
         //
     }
 
@@ -39,8 +36,7 @@ class CommentPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
-    {
+    public function create(User $user) {
         //
     }
 
@@ -51,9 +47,9 @@ class CommentPolicy
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Comment $comment)
-    {
-        //
+    public function update(User $user, Comment $comment) {
+        // ポリシー設定
+        return $user->id === $comment->user_id;
     }
 
     /**
@@ -63,9 +59,8 @@ class CommentPolicy
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Comment $comment)
-    {
-        //
+    public function delete(User $user, Comment $comment) {
+        return $user->id === $comment->user_id;
     }
 
     /**
@@ -75,8 +70,7 @@ class CommentPolicy
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Comment $comment)
-    {
+    public function restore(User $user, Comment $comment) {
         //
     }
 
@@ -87,8 +81,7 @@ class CommentPolicy
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Comment $comment)
-    {
+    public function forceDelete(User $user, Comment $comment) {
         //
     }
 }

@@ -4,7 +4,6 @@
 
         {{-- エラーメッセージ --}}
         <x-flash-message :message="session('notice')" />
-
         <div class="flex flex-wrap -mx-1 lg:-mx-4 mb-4">
             @foreach ($posts as $post)
                 <article class="w-full px-4 md:w-1/2 text-xl text-gray-800 leading-normal">
